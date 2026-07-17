@@ -1,40 +1,14 @@
-\# Algorithmic Trading Building Journal: Week 1 (June 8 – 12, 2026)
+10th June 2026
+
+We had our first lecture today, focusing on the fundamentals of liquidity, volume, and order execution. It was a necessary refresher that made me reconsider my current approach to execution. When managing the family portfolio, I rarely worry about slippage due to the scale and longer time horizons, but in a live algorithmic environment, it is clearly a critical factor. To mitigate this, I will restrict my initial asset universe to highly liquid mega-caps like Apple and Nvidia to ensure tight bid-ask spreads on entry.
 
 
 
-\*\*1. Market Regime \& Macroeconomic Context\*\*
-
-Strategy design must be grounded in the prevailing market regime. During the week of June 8–12, 2026, the market operated in a "low-volatility bull" regime. Key macroeconomic data releases drove market mechanics this week:
-
-\*   \*\*Inflation:\*\* The May CPI print showed headline inflation falling 0.4% from May. Core inflation printed at 2.6% YoY.
-
-\*   \*\*Monetary Policy:\*\* At the June FOMC meeting, the newly appointed Federal Reserve Board Chairman Kevin Warsh held the target federal funds rate steady. Warsh delivered a hawkish message, emphasizing a commitment to bringing inflation back to the 2% target.
-
-\*   \*\*Volatility \& Liquidity:\*\* Despite the hawkish Fed tone, the VIX fell 12.5% to 19.44. The tech sector maintained deep liquidity and high trading volumes, primarily driven by sustained capital expenditure in Artificial Intelligence.
+It was also a heavy macro day. US CPI data printed with core inflation at 2.6 percent, and Kevin Warsh held rates steady at his first FOMC meeting. Despite his hawkish tone regarding inflation targets, the market absorbed it well and the VIX actually fell. Given this resilient regime, I have finalised my order logic for the first model. I am avoiding market orders entirely to prevent poor fills during unexpected volatility spikes. Instead, the algorithm will rely strictly on limit orders for entries and hard stop-losses to cap maximum drawdowns.
 
 
 
-\*\*2. Asset Selection \& Liquidity\*\*
+12th June 2026
 
-Given the resilient tech sector and low broader market volatility, the initial strategy will target high-volume, large-cap technology equities (e.g., AAPL, NVDA, GOOGL). High liquidity in these assets ensures tight bid-ask spreads, which minimizes slippage—a critical factor when deploying algorithmic models in a live environment. 
-
-
-
-\*\*3. Order Execution Strategy\*\*
-
-To capitalize on current market conditions while strictly managing downside risk, the strategy will utilize a tiered order execution logic:
-
-\*   \*\*Market Orders:\*\* Will be avoided to prevent execution at unfavorable prices during sudden volatility spikes.
-
-\*   \*\*Limit Orders:\*\* Used for all trade entries. By setting a specific price ceiling (for buys) or floor (for sells), the model controls exact transaction costs. 
-
-\*   \*\*Stop-Loss Orders:\*\* A hard stop-loss will be attached to every executed trade to cap maximum drawdown, neutralizing the risk of a sudden macro shock.
-
-\*   \*\*Stop-Limit Orders:\*\* Used for breakout scenarios, ensuring the algorithm only enters a momentum trade if the price breaks a resistance level \*and\* can be filled within a strict price window.
-
-
-
-\*\*4. Combating Overfitting in Model Development\*\*
-
-A primary risk in algorithmic design is overfitting—creating a model that perfectly memorizes historical data but fails in live markets. To mitigate this, the strategy will strictly adhere to Out-of-Sample testing. Historical data will be split: 70% "in-sample" data used exclusively for optimizing parameters (like volume multipliers and moving averages), and 30% "out-of-sample" data used to validate the model's predictive power on unseen market conditions.
+Spent this afternoon revisiting the problem of overfitting, which was the final topic from Wednesday's session. It is surprisingly easy to build a model that looks flawless on historical data but fails completely in live markets. To ensure the strategy remains robust, I am implementing a strict 70/30 split on the historical data from the outset. Reserving a pristine out-of-sample dataset for final testing should keep the model's performance grounded in reality before we reach the live simulation.
 
