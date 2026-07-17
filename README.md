@@ -1,4 +1,4 @@
-\Algorithmic Trading Portfolio
+Algorithmic Trading Portfolio
 
 A modular, object-oriented backtesting framework and trading journal developed during a 10-week quantitative trading intensive. 
 
