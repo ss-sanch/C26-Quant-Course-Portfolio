@@ -1,8 +1,5 @@
 Algorithmic Trading Portfolio
 
-A modular, object-oriented backtesting framework and trading journal developed during a 10-week quantitative trading intensive. 
+A modular, object-oriented backtesting framework and trading journal developed during a 10-week quantitative trading course hosted by Career26. 
 
-
-
-Contains distinct trading strategies spanning multiple market regimes, utilizing real-time market data analysis, volume profiling, and strict risk management logic.
-
+Designed to show growth week-by-week in trading knowledge/ability as I progressively improve my trading model, backtesting strategy and portfolio composition.
