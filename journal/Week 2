@@ -1,0 +1,20 @@
+17th June 2026
+
+Had a bit of a reality check in today's lecture. I’ve been assuming market data is this pristine, flawless feed, but it turns out real-world data is incredibly messy. I need to build a data cleaner class immediately to handle a few glaring issues:
+- The 'Zero' Trap: If the data drops out and throws a NaN mid-session, my current model would probably crash. Instead of being lazy and filling gaps with a zero, I'll use linear interpolation to estimate the missing prices smoothly.
+- Anomaly Filtering: Sometimes stock prices just glitch. If an asset spikes 10% in a second and instantly reverts, my stop-losses will trigger for no reason. I definitely need a spike filter to detect and delete those dodgy ticks.
+
+
+19th June 2026
+
+Spent the afternoon untangling corporate actions. It sounds obvious now, but failing to clean historical data will completely break an algorithm.
+- The "Split Problem": If a stock like Nvidia does a 4-for-1 split, the raw price drops by 75%. My model would read that as a catastrophic market crash! From now on, the algorithm will run strictly on the Adjusted Close price to account for splits and dividend drops accurately.
+- Survivorship Bias: It is so tempting to just backtest on the current S&P 500 list. However, if I ignore all the companies that went bust or were delisted over the last decade, my strategy will look artificially brilliant. I have to include the failures in my testing universe.
+
+
+21st June 2026
+
+Fascinating end to the week looking at portfolio construction and market dynamics.
+- Institutional vs. Retail: Seeing the sheer volume of institutional capital reinforced my decision to stick to highly liquid mega-caps. Institutions easily crush retail flow, so trading where liquidity is deepest is my best defence.
+- Markowitz & Modern Portfolio Theory: The maths behind portfolio variance ($\sigma_p^2$) is elegant. It proves exactly how diversifying across un-correlated assets reduces overall risk.
+- Avoiding P-Hacking: Calculating the optimal Sharpe ratio highlighted a massive trap—data spamming. It’s incredibly tempting to just blindly tweak parameters until the backtest curve looks like a straight line up. I have to stay disciplined. If a metric doesn't have a solid, mechanical reason for being there, I am not using it.
