@@ -1,4 +1,5 @@
 25th June 2026
+
 Just finished the Week 3 lecture on Core Strategies. It really put things into perspective. An algorithmic strategy is basically just a strict formula: Conviction + Rules.
 
 We contrasted this with discretionary trading, which relies on human-led decisions and leaves way too much room for emotion and panic—something I’m definitely guilty of when staring at live charts!
@@ -8,6 +9,7 @@ We looked at Trend Following and Moving Averages, specifically the simple case o
 RSI was also covered for measuring momentum. It’s useful for spotting overbought or oversold conditions, but again, if a trend is aggressively strong, fading it just because the RSI is over 70 is a fantastic way to lose money.
 
 28th June 2026
+
 What an absolutely mental week in the markets. Geopolitics is completely driving the wheel right now, and the macro noise is deafening.
 
 First off, Keir Starmer has resigned! That makes it the seventh Prime Minister since the Brexit vote. UK domestic uncertainty is spiking, and inflation pressures are expected to rise again, so I’m definitely keeping my algorithms far away from the FTSE 250 for now.
@@ -17,6 +19,7 @@ Globally, all eyes are on the US-Iran peace talks in Switzerland for a potential
 In the tech world, the hangover from the massive SpaceX IPO continues. Accenture just cut their revenue growth outlook, causing a sharp tech sell-off and hitting ADRs like Infosys. The S&P 500 is hovering around 7,500, but market leadership is definitely shifting away from the mega-caps into smaller semiconductor and hardware names.
 
 30th June 2026
+
 Given how choppy and news-driven the market is right now, I think a simple Trend Following strategy would get absolutely slaughtered. The trends simply aren't sustaining. Instead, I want to build out the Statistical Arbitrage (Pairs Trading) model we discussed.
 
 The logic relies on cointegration—finding two assets where they might trend on their own, but the gap between them does not drift forever.
