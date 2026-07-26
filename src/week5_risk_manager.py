@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from week6_options_hedger import OptionPricingEngine, OptionsStrategyBuilder
 
 class DynamicRiskManager:
     """
@@ -76,6 +77,29 @@ class DynamicRiskManager:
         
         # Cap the maximum leverage/weight at 1.0 (100% of allowed capital)
         return min(vol_scalar, 1.0)
+
+    # Inside your RiskManager class:
+    def check_hedge_cost(self, current_price, target_stop, days_to_expiry, hist_vol, risk_free_rate):
+        pricer = OptionPricingEngine()
+        builder = OptionsStrategyBuilder(pricer)
+        
+        # Calculate the cost to insure this position with a protective put
+        put_premium = pricer.black_scholes_price(
+            S=current_price, 
+            K=target_stop, # Your stop-loss becomes the strike price
+            T=days_to_expiry / 365.0, 
+            r=risk_free_rate, 
+            sigma=hist_vol, 
+            option_type="put"
+        )
+    
+        # If the insurance costs less than 2% of the trade value, it's a viable hedge
+        max_acceptable_premium = current_price * 0.02
+        
+        if put_premium <= max_acceptable_premium:
+            return True, put_premium
+        else:
+            return False, put_premium
 
 # --- RUN CONFIGURATION (TESTING THE MANAGER) ---
 if __name__ == "__main__":
