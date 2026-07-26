@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
+from week6_options_hedger import OptionPricingEngine
 
 class AdvancedBacktester:
     """
@@ -66,7 +67,38 @@ class AdvancedBacktester:
         # Apply Slippage and Commission
         trade_costs = (df['Trade_Trigger'] * self.slippage) + (df['Trade_Trigger'] * (self.commission / self.capital))
         df['Net_Strategy_Returns'] = df['Gross_Strategy_Returns'] - trade_costs
-        
+
+        if 'Historical_Vol' not in df.columns:
+            df['Log_Returns'] = np.log(df['Close'] / df['Close'].shift(1))
+            df['Historical_Vol'] = df['Log_Returns'].rolling(window=21).std() * np.sqrt(252)
+
+        def price_protective_put(row):
+            # Only calculate insurance cost on the exact day a trade OPENS 
+            # (i.e., Position is 1 and a new Trade_Trigger occurs)
+            if row.get('Position') == 1 and row.get('Trade_Trigger') == 1: 
+                pricer = OptionPricingEngine()
+                try:
+                    put_price = pricer.black_scholes_price(
+                        S=row['Close'], 
+                        K=row['Close'] * 0.95, # 5% Out-of-The-Money Strike
+                        T=30 / 365.0,          # 30-day expiry
+                        r=0.05,                # Risk-Free Rate proxy
+                        sigma=max(row.get('Historical_Vol', 0.20), 0.10), 
+                        option_type="put"
+                    )
+                    # Return the cost of the option as a percentage of the stock price
+                    return put_price / row['Close']
+                except Exception:
+                    return 0.0
+            return 0.0
+
+        # Apply pricing engine dynamically on trade days
+        df['Hedge_Drag_Pct'] = df.apply(price_protective_put, axis=1)
+
+        # Subtract the Volatility Drag from your Net Strategy Returns
+        df['Net_Strategy_Returns'] = df['Net_Strategy_Returns'] - df['Hedge_Drag_Pct']
+        # ---------------------------------------------------------
+            
         self.data = df
         return self._evaluate_performance()
 
