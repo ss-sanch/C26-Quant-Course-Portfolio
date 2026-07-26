@@ -12,6 +12,19 @@ class MarketDataCleaner:
         # 10% threshold for single-tick anomalies based on Lesson 2
         self.spike_threshold = spike_threshold 
 
+def add_options_data(df, window=21):
+    # Calculate daily log returns
+    df['Log_Returns'] = np.log(df['Close'] / df['Close'].shift(1))
+    
+    # Calculate rolling historical volatility (annualized)
+    # 252 represents the number of trading days in a year
+    df['Historical_Vol'] = df['Log_Returns'].rolling(window=window).std() * np.sqrt(252)
+    
+    # Hardcode a proxy for the UK risk-free rate (e.g., 5.0%)
+    df['Risk_Free_Rate'] = 0.05
+    
+    return df.dropna()
+
  def fetch_clean_data(self, ticker, start_date, end_date):
         """
         UPGRADED: Now fetches High and Low to support Week 5 ATR Stop Losses.
