@@ -1,4 +1,5 @@
 import pandas as pd
+import yfinance as yf
 import numpy as np
 
 class MarketDataCleaner:
@@ -11,20 +12,25 @@ class MarketDataCleaner:
         # 10% threshold for single-tick anomalies based on Lesson 2
         self.spike_threshold = spike_threshold 
 
-    def resolve_nan_values(self, df: pd.DataFrame, method: str = 'interpolate') -> pd.DataFrame:
+ def fetch_clean_data(self, ticker, start_date, end_date):
         """
-        Resolves missing data points to prevent 'The Zero Trap'.
+        UPGRADED: Now fetches High and Low to support Week 5 ATR Stop Losses.
         """
-        clean_df = df.copy()
-        if method == 'interpolate':
-            # Uses linear interpolation for smoother transitions between gaps
-            clean_df['Close'] = clean_df['Close'].interpolate(method='linear')
-        elif method == 'forward_fill':
-            clean_df['Close'] = clean_df['Close'].ffill()
-        else:
-            clean_df['Close'] = clean_df['Close'].fillna(0)
+        print(f"Fetching full OHLCV data for {ticker}...")
+        df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
+        
+        # Flatten MultiIndex if necessary
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.droplevel(1)
             
-        return clean_df
+        # WE MUST KEEP High, Low, Close, and Volume
+        df = df[['High', 'Low', 'Close', 'Volume']].copy()
+        
+        # Apply Week 2 cleaning (Interpolate NaNs, remove 0s)
+        df.replace(0, pd.NA, inplace=True)
+        df.interpolate(method='linear', inplace=True)
+        
+        return df
 
     def apply_spike_filter(self, df: pd.DataFrame) -> pd.DataFrame:
         """
