@@ -1,0 +1,9 @@
+July 27th 
+
+The live simulation finally kicked off today. The first hour was deceptively quiet as the bot went through its initial data accumulation phase. However, I quickly realised there was a massive discrepancy in the data schema coming from the backend exchange API. Instead of streaming nice, simple numeric floats for the asset prices like we saw during backtesting, the tape was sending over nested JSON dictionaries for every single tick.
+
+Because of this, no trades actually executed in the first couple of hours. Part of that was by design, as the moving average and Z-score models naturally need a 50-minute rolling window to warm up before they can even think about generating signals. But the delay was massively extended by a type-error in the pipeline. When the bot tried to calculate a rolling mean on a list of dictionaries, it obviously threw a fatal TypeError.
+
+Honestly, the most successful part of today wasn't any sort of alpha generation or clever trading, but rather the system's resilience. The overarching try...except execution loop I built caught the exception instantly. Instead of crashing the Colab kernel and completely killing the bot, the system just threw a contained warning to the console, skipped the corrupted execution cycle, and stayed alive. It was a brilliant real-world validation of why you need system circuit-breakers. Despite the data chaos, my portfolio drawdown sits at exactly 0.0%.
+
+To get things moving, I did a quick live intervention on the MarketDataCleaner logic. I patched the update_market_data method to check if an incoming tape tick is a dictionary by using isinstance(data_point, dict). If it is, the code now automatically parses the underlying numeric price (specifically pulling out the 'mid' key). I restarted the bot, and the data accumulation is finally flowing cleanly into the alpha models. A slightly stressful start, but the architecture held up perfectly.
